@@ -17,22 +17,32 @@ enum class SortMode { NEWEST, OLDEST }
 class HistoryViewModel(private val repository: SessionRepository) : ViewModel() {
 
     private val _sortMode = MutableStateFlow(SortMode.NEWEST)
+    private val _searchDate = MutableStateFlow<String?>(null) // null = no active search
 
-    // flatMapLatest: whenever _sortMode changes, SWITCH to a new underlying Flow
-    // (cancels the old query's collection, starts a new one) — this is how sorting live-updates
+    // flatMapLatest: whenever _sortMode OR _searchDate changes, SWITCH to a new underlying Flow
     val sessions: StateFlow<List<StudySession>> = _sortMode.flatMapLatest { mode ->
-        when (mode) {
-            SortMode.NEWEST -> repository.getAllSessionsNewestFirst()
-            SortMode.OLDEST -> repository.getAllSessionsOldestFirst()
+        _searchDate.flatMapLatest { searchDate ->
+            if (searchDate.isNullOrBlank()) {
+                when (mode) {
+                    SortMode.NEWEST -> repository.getAllSessionsNewestFirst()
+                    SortMode.OLDEST -> repository.getAllSessionsOldestFirst()
+                }
+            } else {
+                repository.searchByDate(searchDate)
+            }
         }
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000), // keep flow alive 5s after last observer leaves
+        started = SharingStarted.WhileSubscribed(5000),
         initialValue = emptyList()
     )
 
     fun setSortMode(mode: SortMode) {
         _sortMode.value = mode
+    }
+
+    fun setSearchDate(date: String?) {
+        _searchDate.value = date
     }
 
     fun deleteSession(session: StudySession) {
