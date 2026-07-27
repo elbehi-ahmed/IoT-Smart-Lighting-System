@@ -1,5 +1,6 @@
 package com.ElbehiAhmed.studytimer.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -10,14 +11,22 @@ import com.ElbehiAhmed.studytimer.databinding.ActivityMainBinding
 import com.ElbehiAhmed.studytimer.viewmodel.TimerState
 import com.ElbehiAhmed.studytimer.viewmodel.TimerViewModel
 import kotlinx.coroutines.launch
-
+import com.ElbehiAhmed.studytimer.database.AppDatabase
+import com.ElbehiAhmed.studytimer.repository.SessionRepository
+import com.ElbehiAhmed.studytimer.viewmodel.TimerViewModelFactory
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
     // 'by viewModels()' = Kotlin property delegate.
     // It creates (or reuses, if surviving rotation) the ViewModel instance for us.
-    private val viewModel: TimerViewModel by viewModels()
+    private val viewModel: TimerViewModel by viewModels {
+        TimerViewModelFactory(
+            SessionRepository(
+                AppDatabase.getDatabase(applicationContext).studySessionDao()
+            )
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +56,14 @@ class MainActivity : AppCompatActivity() {
             viewModel.stopTimer()
             // Session saving to Room comes in the next milestone
         }
+
+        binding.fabHistory.setOnClickListener {
+            startActivity(Intent(this, HistoryActivity::class.java))
+        }
+        binding.fabHistory.setOnClickListener {
+            val intent = android.content.Intent(this, HistoryActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun observeViewModel() {
@@ -61,7 +78,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 launch {
                     viewModel.elapsedSeconds.collect { seconds ->
-                        binding.tvElapsedTime.text = formatTime(seconds)
+
+                        binding.tvElapsedTime.text = com.ElbehiAhmed.studytimer.utils.TimeUtils.formatDuration(seconds)
                     }
                 }
             }
@@ -91,10 +109,5 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun formatTime(totalSeconds: Long): String {
-        val hours = totalSeconds / 3600
-        val minutes = (totalSeconds % 3600) / 60
-        val seconds = totalSeconds % 60
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
-    }
+
 }

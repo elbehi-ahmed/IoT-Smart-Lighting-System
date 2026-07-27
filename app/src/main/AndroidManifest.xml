@@ -21,6 +21,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activities.HistoryActivity"
+            android:exported="false"
+            android:parentActivityName=".activities.MainActivity" />
+
+
     </application>
 
 </manifest>
