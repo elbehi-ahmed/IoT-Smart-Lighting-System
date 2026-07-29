@@ -5,9 +5,8 @@ A simple Android app to track study sessions with start/pause/resume/stop timing
 ## Features
 - Start, pause, resume, and stop a study timer (HH:MM:SS)
 - Automatically saves each completed session (date, start/end time, duration)
-- Session history with sort (newest/oldest), search by date, and delete (single/all)
-- Statistics: total time, session count, average/longest/shortest session, today/week/month totals
-- Material Design 3 UI with dark mode and landscape support
+- Session history with sort (newest/oldest), search by date, and delete 
+- Statistics
 
 ## Tech Stack
 - Kotlin, MVVM architecture
@@ -16,7 +15,6 @@ A simple Android app to track study sessions with start/pause/resume/stop timing
 - ViewModel + StateFlow / Flow
 - ViewBinding
 - RecyclerView
-- Material Design 3
 
 ## Installation
 
@@ -27,7 +25,7 @@ A simple Android app to track study sessions with start/pause/resume/stop timing
    ```
 2. Open the project in **Android Studio** (Hedgehog or newer recommended).
 3. Let Gradle sync finish.
-4. Click **Run ▶** and select an emulator or a physical device (USB debugging enabled).
+4. Click **Run ▶** and select an emulator or a physical device .
 
 ### Install a pre-built APK
 1. Download the APK from the [Releases](../../releases) page.
@@ -37,4 +35,3 @@ A simple Android app to track study sessions with start/pause/resume/stop timing
 
 ## Author
 **Ahmed Elbehi**
-GitHub: [github.com/elbehi-ahmed](https://github.com/elbehi-ahmed)
