@@ -49,6 +49,7 @@
             android:layout_marginTop="32dp"
             android:gravity="center">
 
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnStart"
                 android:layout_width="0dp"
@@ -75,6 +76,15 @@
                 android:enabled="false" />
 
         </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGithub"
+            style="@style/Widget.Material3.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="300dp"
+            android:text="View on GitHub"
+            app:icon="@drawable/ic_github"
+            app:iconTint="?attr/colorPrimary" />
 
     </LinearLayout>
 

@@ -67,6 +67,13 @@ class MainActivity : AppCompatActivity() {
         binding.fabHistory.setOnClickListener {
             startActivity(Intent(this, HistoryActivity::class.java))
         }
+        binding.btnGithub.setOnClickListener {
+            val intent = android.content.Intent(
+                android.content.Intent.ACTION_VIEW,
+                android.net.Uri.parse("https://github.com/elbehi-ahmed")
+            )
+            startActivity(intent)
+        }
     }
 
     private fun observeViewModel() {
