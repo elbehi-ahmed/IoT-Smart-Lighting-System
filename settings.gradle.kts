@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "StudyTimer"
+rootProject.name = "remote relay"
 include(":app")
  

@@ -1,9 +1,9 @@
-# Study Timer
+# remote relay
 
-A simple Android app to track study sessions with start/pause/resume/stop timing, session history, and statistics.
+A simple Android app to control a remote relay with start/stop timing, session history, and statistics.
 
 ## Features
-- Start, pause, resume, and stop a study timer (HH:MM:SS)
+- Start and stop a remote relay (HH:MM:SS)
 - Automatically saves each completed session (date, start/end time, duration)
 - Session history with sort (newest/oldest), search by date, and delete 
 - Statistics

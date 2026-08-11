@@ -4,5 +4,4 @@ package com.ElbehiAhmed.studytimer.viewmodel
 sealed class TimerState {
     object Idle : TimerState()      // no timer running
     object Running : TimerState()   // timer actively counting
-    object Paused : TimerState()    // timer paused, can resume
 }

@@ -49,16 +49,7 @@ class TimerViewModel(private val repository: SessionRepository) : ViewModel() {
         }
     }
 
-    fun pauseTimer() {
-        if (_timerState.value != TimerState.Running) return
-        _timerState.value = TimerState.Paused
-        timerJob?.cancel()
-    }
-
-    fun resumeTimer() {
-        if (_timerState.value != TimerState.Paused) return
-        startTimer()
-    }
+    // pause/resume removed: timer only supports start/stop
 
     // Now returns Unit — it saves the session itself instead of handing data back to the Activity
     fun stopTimer() {
@@ -70,7 +61,7 @@ class TimerViewModel(private val repository: SessionRepository) : ViewModel() {
 
         _timerState.value = TimerState.Idle
         _elapsedSeconds.value = 0L
-
+        
         // Don't save zero-second accidental taps
         if (finalSeconds > 0) {
             val session = StudySession(

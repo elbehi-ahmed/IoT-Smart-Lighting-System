@@ -50,16 +50,6 @@ class MainActivity : AppCompatActivity() {
             viewModel.startTimer()
             publishRelayState("on")
         }
-
-        binding.btnPauseResume.setOnClickListener {
-            val state = viewModel.timerState.value
-            if (state == TimerState.Running) {
-                viewModel.pauseTimer()
-            } else if (state == TimerState.Paused) {
-                viewModel.resumeTimer()
-            }
-        }
-
         binding.btnStop.setOnClickListener {
             val elapsed = viewModel.elapsedSeconds.value
             viewModel.stopTimer()
@@ -118,21 +108,11 @@ class MainActivity : AppCompatActivity() {
         when (state) {
             TimerState.Idle -> {
                 binding.btnStart.isEnabled = true
-                binding.btnPauseResume.isEnabled = false
                 binding.btnStop.isEnabled = false
-                binding.btnPauseResume.text = "Pause"
             }
             TimerState.Running -> {
                 binding.btnStart.isEnabled = false
-                binding.btnPauseResume.isEnabled = true
                 binding.btnStop.isEnabled = true
-                binding.btnPauseResume.text = "Pause"
-            }
-            TimerState.Paused -> {
-                binding.btnStart.isEnabled = false
-                binding.btnPauseResume.isEnabled = true
-                binding.btnStop.isEnabled = true
-                binding.btnPauseResume.text = "Resume"
             }
         }
     }
