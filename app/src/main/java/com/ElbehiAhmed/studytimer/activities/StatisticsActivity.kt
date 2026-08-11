@@ -48,7 +48,7 @@ class StatisticsActivity : AppCompatActivity() {
     }
 
     private fun renderStats(stats: SessionStats) {
-        binding.tvTotalTime.text = "Total Study Time: ${TimeUtils.formatDuration(stats.totalSeconds)}"
+        binding.tvTotalTime.text = "Total Time: ${TimeUtils.formatDuration(stats.totalSeconds)}"
         binding.tvSessionCount.text = "Sessions: ${stats.sessionCount}"
         binding.tvAverage.text = "Average Session: ${TimeUtils.formatDuration(stats.averageSeconds)}"
         binding.tvLongest.text = "Longest Session: ${TimeUtils.formatDuration(stats.longestSeconds)}"

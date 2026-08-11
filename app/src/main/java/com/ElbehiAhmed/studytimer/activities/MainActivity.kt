@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnGithub.setOnClickListener {
             val intent = android.content.Intent(
                 android.content.Intent.ACTION_VIEW,
-                android.net.Uri.parse("https://github.com/elbehi-ahmed")
+                android.net.Uri.parse("https://github.com/elbehi-ahmed/Smart-Relay-IoT")
             )
             startActivity(intent)
         }
