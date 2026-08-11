@@ -14,11 +14,14 @@ import com.ElbehiAhmed.studytimer.R
 import com.ElbehiAhmed.studytimer.database.AppDatabase
 import com.ElbehiAhmed.studytimer.databinding.ActivityMainBinding
 import com.ElbehiAhmed.studytimer.repository.SessionRepository
+import com.ElbehiAhmed.studytimer.utils.RelayMqttClient
 import com.ElbehiAhmed.studytimer.utils.TimeUtils
 import com.ElbehiAhmed.studytimer.viewmodel.TimerState
 import com.ElbehiAhmed.studytimer.viewmodel.TimerViewModel
 import com.ElbehiAhmed.studytimer.viewmodel.TimerViewModelFactory
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,6 +48,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupButtonClicks() {
         binding.btnStart.setOnClickListener {
             viewModel.startTimer()
+            publishRelayState("on")
         }
 
         binding.btnPauseResume.setOnClickListener {
@@ -59,6 +63,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnStop.setOnClickListener {
             val elapsed = viewModel.elapsedSeconds.value
             viewModel.stopTimer()
+            publishRelayState("off")
             if (elapsed > 0) {
                 Toast.makeText(this, "Session saved! (${TimeUtils.formatDuration(elapsed)})", Toast.LENGTH_SHORT).show()
             }
@@ -89,6 +94,22 @@ class MainActivity : AppCompatActivity() {
                         binding.tvElapsedTime.text = TimeUtils.formatDuration(seconds)
                     }
                 }
+            }
+        }
+    }
+
+    private fun publishRelayState(message: String) {
+        lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    RelayMqttClient.publish(message)
+                }
+            } catch (exception: Exception) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "MQTT publish failed: ${exception.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
