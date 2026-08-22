@@ -1,0 +1,221 @@
+# Closed-Loop Control Study
+
+## 1. First-Order Approximation of the Plant
+
+The open-loop step response of the lighting system was measured experimentally. The response was **monotonic**, with no significant oscillation or overshoot, and therefore can be approximated as a **first-order system** for controller-design purposes.
+
+The plant is modeled as:
+
+[
+G(s)=\frac{K_{\text{plant}}}{\tau s+1}
+]
+
+### Plant Gain
+
+The measured step was from **50% to 90% brightness**, corresponding to a brightness change of:
+
+[
+\Delta u=90-50=40
+]
+
+The measured LDR output changed from approximately:
+
+[
+2958\rightarrow3568\text{ ADC}
+]
+
+Therefore:
+
+[
+\Delta y=3568-2958=610\text{ ADC}
+]
+
+The experimental plant gain is therefore:
+
+[
+K_{\text{plant}}=\frac{\Delta y}{\Delta u}
+=\frac{610}{40}
+\approx15.25
+]
+
+Thus:
+
+[
+\boxed{K_{\text{plant}}\approx15.25\text{ ADC/brightness unit}}
+]
+
+### Time Constant
+
+For a first-order system, the time constant (\tau) is the time required for the output to reach **63.2% of its total change**.
+
+The total output change was 610 ADC:
+
+[
+0.632\times610\approx385
+]
+
+Therefore, the 63.2% level is:
+
+[
+2958+385\approx3343\text{ ADC}
+]
+
+The experimental response reaches this region at approximately **40 ms** after the step.
+
+Considering the approximately **10 ms measurement/dead-time effect**, the estimated plant time constant is:
+
+[
+\boxed{\tau\approx35\text{ ms}}
+]
+
+The simplified plant model is therefore:
+
+[
+\boxed{G(s)=\frac{15.25}{0.035s+1}}
+]
+
+A small delay is present in the physical LDR/lamp system, but it is neglected in this simplified model for controller design.
+
+---
+
+# 2. PI Controller Design
+
+A **PI controller** was selected rather than immediately implementing a full PID controller. The integral term eliminates steady-state error, while the proportional term provides the primary response to changes in illumination.
+
+The controller is:
+
+[
+C(s)=K_p+\frac{K_i}{s}
+]
+
+or equivalently:
+
+[
+C(s)=K_p\left(1+\frac{1}{T_i s}\right)
+]
+
+where:
+
+[
+T_i=\frac{K_p}{K_i}
+]
+
+## Proportional Gain
+
+A proportional gain of:
+
+[
+\boxed{K_p=0.10}
+]
+
+was selected as the initial controller gain.
+
+The gain was chosen to provide a reasonably fast response while avoiding excessively aggressive corrections that could cause instability or visible brightness fluctuations.
+
+## Integral Gain
+
+The integral gain was selected as:
+
+[
+\boxed{K_i=0.025}
+]
+
+This gives an integral time constant of:
+
+[
+T_i=\frac{K_p}{K_i}
+=\frac{0.10}{0.025}
+=\boxed{4\text{ s}}
+]
+
+The integral action is intentionally much slower than the approximately 35 ms plant time constant. This reduces the tendency of the controller to react excessively to the small steady-state variations observed in the LDR measurement.
+
+---
+
+# 3. Final PI Controller
+
+The implemented controller therefore uses:
+
+| Parameter                     |                          Value |
+| ----------------------------- | -----------------------------: |
+| Plant gain (K_{\text{plant}}) | **≈15.25 ADC/brightness unit** |
+| Plant time constant (\tau)    |                     **≈35 ms** |
+| Proportional gain (K_p)       |                       **0.10** |
+| Integral gain (K_i)           |                      **0.025** |
+| Integral time (T_i)           |                        **4 s** |
+| Controller type               |                         **PI** |
+| PID update period             |                      **20 ms** |
+
+The controller output is constrained to the available TRIAC brightness range:
+
+[
+0\leq u\leq99
+]
+
+where (u) represents the commanded brightness level.
+
+---
+
+# 4. Control Principle
+
+The closed-loop system operates according to:
+
+[
+e(t)=r(t)-y(t)
+]
+
+where:
+
+* (r(t)) = desired LDR value (setpoint)
+* (y(t)) = measured LDR ADC value
+* (e(t)) = control error
+
+The PI controller calculates:
+
+[
+u(t)=K_pe(t)+K_i\int e(t),dt
+]
+
+The resulting (u(t)) determines the commanded brightness of the TRIAC dimmer.
+
+The complete feedback loop is:
+
+```text
+Desired illumination
+        │
+        ▼
+   Setpoint r(t)
+        │
+        ▼
+     ┌───────┐
+     │ Error │◄──────────────────────┐
+     │ r - y │                       │
+     └───┬───┘                       │
+         │                           │
+         ▼                           │
+      PI Controller                  │
+         │                           │
+         ▼                           │
+  TRIAC Brightness Command           │
+         │                           │
+         ▼                           │
+       Lamp                          │
+         │                           │
+         ▼                           │
+       Light                         │
+         │                           │
+         ▼                           │
+        LDR                          │
+         │                           │
+         ▼                           │
+       ADC ──────────────────────────┘
+```
+
+## Engineering Interpretation
+
+When the measured illumination is below the desired level, the error becomes positive and the PI controller increases the TRIAC brightness command. As the measured illumination approaches the setpoint, the proportional correction decreases. The integral term gradually eliminates any remaining steady-state error.
+
+The experimentally measured plant dynamics — approximately **60 ms rise time** and **120 ms settling time** — indicate that the lighting system responds quickly enough for closed-loop control. The relatively small steady-state variation of approximately **±5 ADC counts** also provides a reasonably stable feedback signal.
+
+**Note:** The (K_p=0.10) and (K_i=0.025) values should be treated as **initial experimentally selected gains**, not as mathematically guaranteed optimal values. Final tuning should be validated experimentally on the actual hardware.
+_
