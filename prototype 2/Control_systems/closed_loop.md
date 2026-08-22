@@ -31,7 +31,6 @@ For one of the step tests:
 | Rise time (10–90%) | ≈60 ms |
 | 2% settling time | ≈120 ms |
 | Dead time | ≈0–10 ms |
-| Overshoot | ≈7 ADC ≈1.1% |
 | Steady-state variation | ≈±5 ADC |
 
 The response was mostly monotonic and did not show significant oscillation during the open-loop test.
