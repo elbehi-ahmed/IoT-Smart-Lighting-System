@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">bedside lamp</string>
+    <string name="mode_manual_hint">Manual mode: drag the slider</string>
+    <string name="mode_automatic_hint">Automatic mode: slider is frozen</string>
+</resources>
