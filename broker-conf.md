@@ -2,24 +2,15 @@
 
 ## 1. What is an MQTT Broker?
 
-An **MQTT broker** is the central server that receives MQTT messages from devices/apps and forwards them to the clients that subscribed to the corresponding topics.
+An **MQTT broker** is the central server that receives MQTT messages and forwards them to the clients.
 
-For a remote relay project, the architecture can look like this:
+the architecture can look like this:
 
 ```text
 Android App  ──publish──>  HiveMQ Broker  ──publish──>  ESP32
                              │
                              └── MQTT topics
 ```
-
-Example:
-
-```text
-Topic: relay/start
-Message: on
-```
-
-The Android app publishes `on` to `relay/start`. The HiveMQ broker receives it and sends it to the ESP32 if the ESP32 is subscribed to that topic.
 
 ### Why use a broker?
 
@@ -33,8 +24,6 @@ It provides:
 - **TLS encryption** for secure communication.
 - Communication over the **Internet**, so the ESP32 and phone can be in different networks.
 - A place where you can manage MQTT credentials and permissions.
-
-HiveMQ Cloud is a managed MQTT broker, so HiveMQ manages the server infrastructure for you.
 
 ---
 
@@ -56,8 +45,6 @@ Create an account using:
 - Google
 - GitHub
 - LinkedIn
-
-If you register with email, verify your email address.
 
 ---
 
@@ -123,8 +110,6 @@ Username: remote-relay
 Password: ********
 ```
 
-Use strong credentials in a real project.
-
 ---
 
 # 4. Understand Your MQTT Topics
@@ -133,7 +118,7 @@ The broker does not normally need to know what your application means by a messa
 
 Your clients communicate through **topics**.
 
-For example, your Remote Relay project can use:
+For example :
 
 ```text
 relay/start
@@ -143,22 +128,6 @@ relay/temperature
 relay/humidity
 ```
 
-Example:
-
-```text
-Android App
-    |
-    | publish "on"
-    v
-relay/start
-    |
-    v
-HiveMQ Broker
-    |
-    | forwards "on"
-    v
-ESP32
-```
 
 The ESP32 subscribes to:
 
@@ -181,32 +150,6 @@ HiveMQ Cloud provides a web-based MQTT client that can be used to test your conn
 Open the **Web Client** for your cluster.
 
 Enter your MQTT credentials and connect.
-
-Then test:
-
-### Subscribe
-
-Subscribe to:
-
-```text
-relay/test
-```
-
-### Publish
-
-Publish to:
-
-```text
-relay/test
-```
-
-with:
-
-```text
-Hello ESP32
-```
-
-If the subscription receives `Hello ESP32`, your MQTT broker is working correctly.
 
 ---
 
@@ -246,29 +189,10 @@ subscribe("relay/start")
 
 When the Android app publishes `on`, the broker forwards the message to the ESP32.
 
----
-
-# 7. Important Security Notes
-
-HiveMQ Cloud supports secure MQTT connections using **TLS**.
-
-Use the secure TLS connection information provided by your cluster.
-
-Do not put passwords directly in a public GitHub repository.
-
-Instead of:
-
-```kotlin
-val password = "mySecretPassword"
-```
-
-use a safer configuration approach such as `local.properties`, environment variables, or another secrets-management solution.
-
-Also configure topic permissions so that clients only have the access they actually need.
 
 ---
 
-# 8. Quick Summary
+# 7. Quick Summary
 
 ```text
 1. Go to hivemq.com
@@ -282,30 +206,6 @@ Also configure topic permissions so that clients only have the access they actua
 9. Put the connection information in your Android app
 10. Put the connection information in your ESP32
 11. Use MQTT topics to exchange messages
-```
-
-## Your Remote Relay Project
-
-```text
-                Internet
-                   |
-                   v
-        +---------------------+
-        |   HiveMQ Cloud      |
-        |    MQTT Broker      |
-        +---------------------+
-             ^           |
-             |           |
-        publish       publish
-             |           |
-             |           v
-     +-------------+  +-------------+
-     | Android App |  |    ESP32    |
-     +-------------+  +-------------+
-             |           |
-             |           |
-             +---- MQTT -+
-               topics
 ```
 
 The **broker is the middleman** that allows your Android application and ESP32 to communicate reliably without needing a direct connection between them.
