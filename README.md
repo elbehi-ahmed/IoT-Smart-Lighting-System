@@ -13,8 +13,8 @@ The repository is divided into two working prototypes. Each prototype contains a
 
 ## Demos
 
-*   [Demo Video 1 (Basic) - *Insert Link Here*](#)
-*   [Demo Video 2 (Advanced) - *Insert Link Here*](#)
+*   [Demo Video 1 (Basic) - *e*](#)
+*   [Demo Video 2 (Advanced) - *ere*](#)
 
 ## Installation & Setup
 
