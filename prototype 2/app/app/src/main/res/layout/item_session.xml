@@ -36,6 +36,14 @@
             android:textStyle="bold"
             android:text="Duration: 00:45:00" />
 
+        <TextView
+            android:id="@+id/tvSensors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Temperature: --  |  Humidity: --  |  Brightness: --"
+            android:textSize="13sp" />
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

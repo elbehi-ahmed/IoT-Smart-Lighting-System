@@ -72,6 +72,27 @@
                         android:layout_marginTop="4dp"
                         android:text="Shortest Session: 00:00:00" />
 
+                    <TextView
+                        android:id="@+id/tvAverageTemperature"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Average Temperature: Unavailable" />
+
+                    <TextView
+                        android:id="@+id/tvAverageHumidity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Average Humidity: Unavailable" />
+
+                    <TextView
+                        android:id="@+id/tvAverageBrightness"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Average Brightness: Unavailable" />
+
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>

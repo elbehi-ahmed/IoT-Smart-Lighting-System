@@ -8,5 +8,8 @@ data class SessionStats(
     val shortestSeconds: Long = 0,
     val todaySeconds: Long = 0,
     val weekSeconds: Long = 0,
-    val monthSeconds: Long = 0
+    val monthSeconds: Long = 0,
+    val averageTemperature: Double? = null,
+    val averageHumidity: Double? = null,
+    val averageBrightness: Double? = null
 )

@@ -13,5 +13,8 @@ data class StudySession(
     val startTime: String,   // e.g. "14:00:00"
     val endTime: String,     // e.g. "14:45:30"
     val durationSeconds: Long,
-    val durationFormatted: String // e.g. "00:45:30"
+    val durationFormatted: String, // e.g. "00:45:30"
+    val temperature: Double? = null,
+    val humidity: Double? = null,
+    val brightness: Double? = null
 )

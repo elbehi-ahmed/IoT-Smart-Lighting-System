@@ -39,6 +39,9 @@ private const val TOPIC_MODE = "home/mode"
 // How long we wait for an "on" heartbeat on home/state before we assume the device is offline.
 private const val STATE_WATCHDOG_TIMEOUT_MS = 10_000L
 
+// The text shown on the dashboard when we haven't heard "on" recently (or at all).
+private const val STATE_OFFLINE_TEXT = "offline"
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -49,12 +52,16 @@ class MainActivity : AppCompatActivity() {
     // Prevents programmatic slider updates from re-triggering publish/timer logic.
     private var isUpdatingSliderProgrammatically = false
     private val brightnessHandler = Handler(Looper.getMainLooper())
+    private var latestTemperature: Double? = null
+    private var latestHumidity: Double? = null
+    private var latestBrightness: Double? = null
+    private val sessionTemperatures = mutableListOf<Double>()
 
     // Watchdog for the home/state dashboard value: if "on" isn't seen again within
-    // STATE_WATCHDOG_TIMEOUT_MS, we assume the device went offline and show "off".
+    // STATE_WATCHDOG_TIMEOUT_MS, we assume the device went offline and show "offline".
     private val stateWatchdogHandler = Handler(Looper.getMainLooper())
     private val stateWatchdogRunnable = Runnable {
-        binding.tvStateValue.text = "off"
+        binding.tvStateValue.text = STATE_OFFLINE_TEXT   // ← just a local UI update, nothing published
     }
 
     private val viewModel: TimerViewModel by viewModels {
@@ -71,8 +78,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
-        // Assume offline until we actually hear an "on" heartbeat.
-        binding.tvStateValue.text = "off"
+        // Default state: assume offline until we actually hear an "on" heartbeat from the ESP32.
+        binding.tvStateValue.text = STATE_OFFLINE_TEXT
 
         setupModeToggle()
         setupSlider()
@@ -80,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         observeViewModel()
         subscribeToDashboardTopics()
 
-        // 5) Announce the app is up.
+        // Announce the app is up.
         publishToTopic(TOPIC_START, "on")
     }
 
@@ -123,7 +130,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // 3) Manual/Automatic toggle. Manual is selected by default.
+    // Manual/Automatic toggle. Manual is selected by default.
     private fun setupModeToggle() {
         binding.toggleMode.check(R.id.btnManual)
         applyModeToSlider()
@@ -145,7 +152,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // 2 & 7) Brightness slider replaces Start/Stop; drives publishing + the timer.
+    // Brightness slider replaces Start/Stop; drives publishing + the timer.
     private fun setupSlider() {
         binding.sliderBrightness.valueFrom = 0f
         binding.sliderBrightness.valueTo = 100f
@@ -153,20 +160,29 @@ class MainActivity : AppCompatActivity() {
 
         binding.sliderBrightness.addOnChangeListener { _, value, fromUser ->
             binding.tvSliderValue.text = value.toInt().toString()
+            latestBrightness = value.toDouble()
 
             if (!fromUser || isUpdatingSliderProgrammatically) return@addOnChangeListener
 
             brightnessHandler.removeCallbacksAndMessages(null)
             brightnessHandler.postDelayed({
                 publishToTopic(TOPIC_BRIGHTNESS, value.toInt().toString())
-            }, 10L)
+            }, 25L)
 
             val isTimerRunning = viewModel.timerState.value == TimerState.Running
             when {
-                value > 0f && !isTimerRunning -> viewModel.startTimer()
+                value > 0f && !isTimerRunning -> {
+                    sessionTemperatures.clear()
+                    latestTemperature?.let(sessionTemperatures::add)
+                    viewModel.startTimer()
+                }
                 value == 0f && isTimerRunning -> {
                     val elapsed = viewModel.elapsedSeconds.value
-                    viewModel.stopTimer() // Repository saves the session to history here.
+                    val sessionTemperature = sessionTemperatures.average().takeIf {
+                        sessionTemperatures.isNotEmpty()
+                    }
+                    viewModel.stopTimer(sessionTemperature, latestHumidity, latestBrightness)
+                    sessionTemperatures.clear()
                     if (elapsed > 0) {
                         Toast.makeText(
                             this,
@@ -191,32 +207,41 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // 1 & 8) Dashboard: subscribe to sensor/state topics and fill in the values shown.
+    // Dashboard: subscribe to sensor/state topics and fill in the values shown.
     private fun subscribeToDashboardTopics() {
         subscribeTopic(TOPIC_TEMPERATURE) { payload ->
             binding.tvTemperatureValue.text = "$payload°C"
+            latestTemperature = payload.toDoubleOrNull()
+            if (viewModel.timerState.value == TimerState.Running) {
+                latestTemperature?.let(sessionTemperatures::add)
+            }
         }
         subscribeTopic(TOPIC_HUMIDITY) { payload ->
             binding.tvHumidityValue.text = "$payload%"
+            latestHumidity = payload.toDoubleOrNull()
         }
         subscribeTopic(TOPIC_STATE) { payload ->
             handleStatePayload(payload)
         }
     }
 
-    // Requirement 2: if "on" isn't republished on home/state within 10s, show "off" on the
-    // dashboard. Every time "on" arrives we (re)arm a 10s countdown; if it fires, we show "off".
-    // Any other payload is shown as-is and cancels the pending countdown.
+    // If "on" isn't republished on home/state within STATE_WATCHDOG_TIMEOUT_MS, we show
+    // "offline" on the dashboard. Every time "on" arrives we (re)arm a fresh countdown;
+    // if it fires without a new "on" showing up, we fall back to offline.
     private fun handleStatePayload(payload: String) {
-        stateWatchdogHandler.removeCallbacks(stateWatchdogRunnable)
+        stateWatchdogHandler.removeCallbacks(stateWatchdogRunnable) // cancel any pending timeout
 
-        binding.tvStateValue.text = payload
+        binding.tvStateValue.text = payload   // show whatever the ESP32 sent on home/state
 
-        if (payload.equals("on", ignoreCase = true)) {
+        if (payload.equals("online", ignoreCase = true)) {
+            // (re)arm a fresh countdown every time "online" arrives
             stateWatchdogHandler.postDelayed(stateWatchdogRunnable, STATE_WATCHDOG_TIMEOUT_MS)
         }
-    }
 
+        if (payload.equals("connecting", ignoreCase = true)) {
+            publishToTopic(TOPIC_START, "on")
+        }
+    }
     private fun subscribeTopic(topic: String, onMessage: (String) -> Unit) {
         lifecycleScope.launch {
             try {

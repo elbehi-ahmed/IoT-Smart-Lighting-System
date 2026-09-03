@@ -53,6 +53,9 @@ class StatisticsActivity : AppCompatActivity() {
         binding.tvAverage.text = "Average Session: ${TimeUtils.formatDuration(stats.averageSeconds)}"
         binding.tvLongest.text = "Longest Session: ${TimeUtils.formatDuration(stats.longestSeconds)}"
         binding.tvShortest.text = "Shortest Session: ${TimeUtils.formatDuration(stats.shortestSeconds)}"
+        binding.tvAverageTemperature.text = "Average Temperature: ${formatSensor(stats.averageTemperature, "°C")}"
+        binding.tvAverageHumidity.text = "Average Humidity: ${formatSensor(stats.averageHumidity, "%")}"
+        binding.tvAverageBrightness.text = "Average Brightness: ${formatSensor(stats.averageBrightness, "%")}"
 
         binding.tvTodayLabel.text = "Today: ${TimeUtils.formatDuration(stats.todaySeconds)}"
         binding.tvWeekLabel.text = "This Week: ${TimeUtils.formatDuration(stats.weekSeconds)}"
@@ -68,6 +71,9 @@ class StatisticsActivity : AppCompatActivity() {
                 ((stats.monthSeconds * 100) / stats.totalSeconds).toInt()
         }
     }
+
+    private fun formatSensor(value: Double?, unit: String): String =
+        value?.let { "%.1f%s".format(it, unit) } ?: "Unavailable"
 
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()

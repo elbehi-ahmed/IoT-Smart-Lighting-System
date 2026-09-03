@@ -52,7 +52,7 @@ class TimerViewModel(private val repository: SessionRepository) : ViewModel() {
     // pause/resume removed: timer only supports start/stop
 
     // Now returns Unit — it saves the session itself instead of handing data back to the Activity
-    fun stopTimer() {
+    fun stopTimer(temperature: Double?, humidity: Double?, brightness: Double?) {
         if (_timerState.value == TimerState.Idle) return // nothing to stop
 
         timerJob?.cancel()
@@ -69,7 +69,10 @@ class TimerViewModel(private val repository: SessionRepository) : ViewModel() {
                 startTime = sessionStartTime,
                 endTime = endTime,
                 durationSeconds = finalSeconds,
-                durationFormatted = TimeUtils.formatDuration(finalSeconds)
+                durationFormatted = TimeUtils.formatDuration(finalSeconds),
+                temperature = temperature,
+                humidity = humidity,
+                brightness = brightness
             )
 
             // viewModelScope.launch because insertSession is a suspend fun (database work)
