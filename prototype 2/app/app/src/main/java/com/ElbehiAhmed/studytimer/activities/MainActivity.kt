@@ -56,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     private var latestHumidity: Double? = null
     private var latestBrightness: Double? = null
     private val sessionTemperatures = mutableListOf<Double>()
+    private val sessionBrightnessValues = mutableListOf<Double>()
 
     // Watchdog for the home/state dashboard value: if "on" isn't seen again within
     // STATE_WATCHDOG_TIMEOUT_MS, we assume the device went offline and show "offline".
@@ -125,7 +126,7 @@ class MainActivity : AppCompatActivity() {
         }
         binding.btnGithub.setOnClickListener {
             startActivity(
-                Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/elbehi-ahmed/Smart-Relay-IoT"))
+                Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/elbehi-ahmed/IoT-Smart-Lighting-System"))
             )
         }
     }
@@ -173,16 +174,25 @@ class MainActivity : AppCompatActivity() {
             when {
                 value > 0f && !isTimerRunning -> {
                     sessionTemperatures.clear()
+                    sessionBrightnessValues.clear()
                     latestTemperature?.let(sessionTemperatures::add)
+                    sessionBrightnessValues.add(value.toDouble())
                     viewModel.startTimer()
+                }
+                value > 0f && isTimerRunning -> {
+                    sessionBrightnessValues.add(value.toDouble())
                 }
                 value == 0f && isTimerRunning -> {
                     val elapsed = viewModel.elapsedSeconds.value
                     val sessionTemperature = sessionTemperatures.average().takeIf {
                         sessionTemperatures.isNotEmpty()
                     }
-                    viewModel.stopTimer(sessionTemperature, latestHumidity, latestBrightness)
+                    val sessionBrightness = sessionBrightnessValues.average().takeIf {
+                        sessionBrightnessValues.isNotEmpty()
+                    }
+                    viewModel.stopTimer(sessionTemperature, latestHumidity, sessionBrightness)
                     sessionTemperatures.clear()
+                    sessionBrightnessValues.clear()
                     if (elapsed > 0) {
                         Toast.makeText(
                             this,
