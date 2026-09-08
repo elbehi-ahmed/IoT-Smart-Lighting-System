@@ -1,0 +1,23 @@
+
+zero crossing at: 41520947 us
+
+Zero crossing at: 41540924 us
+
+Zero crossing at: 41560900 us
+
+Zero crossing at: 41580878 us
+
+Zero crossing at: 41600853 us
+
+Zero crossing at: 41620839 us 
+
+Zero crossing at: 41640814 us
+
+Zero crossing at: 41660791 us
+
+Zero crossing at: 41680768 us
+
+Zero crossing at: 41700744 us
+
+Zero crossing at: 41703070 us
+
