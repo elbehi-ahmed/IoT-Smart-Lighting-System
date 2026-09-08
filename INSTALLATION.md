@@ -6,10 +6,7 @@ This guide explains how to run the Smart Relay IoT project locally and how to co
 
 ### Software
 
-- Windows, macOS, or Linux
-- Git
-- Android Studio with the Android SDK and an Android 8.0 (API 26) or newer device/emulator
-- A JDK supported by the Android Studio/Gradle installation. The Android modules compile Java source compatibility 11.
+- Android Studio 
 - Arduino IDE 2.x or PlatformIO
 - ESP32 board support for Arduino IDE
 - An MQTT client such as the HiveMQ Cloud Web Client for testing
@@ -32,8 +29,6 @@ git clone https://github.com/elbehi-ahmed/IoT-Smart-Lighting-System.git
 cd Smart-Relay-IoT
 ```
 
-If the repository was downloaded as a ZIP, extract it and open the extracted `Smart-Relay-IoT` directory.
-
 ## 3. Create and test the MQTT broker
 
 Prototype 2 uses HiveMQ Cloud over TLS on port `8883`.
@@ -52,15 +47,13 @@ Prototype 2 is the complete implementation.
 
 ### Android MQTT settings
 
-Open [`RelayMqttClient.kt`](prototype%202/app/app/src/main/java/com/ElbehiAhmed/studytimer/utils/RelayMqttClient.kt) and replace the placeholder values in `HOST`, `USERNAME`, and `PASSWORD` with your broker settings. Keep port `8883` for the TLS connection unless your broker configuration says otherwise.
+Open [`RelayMqttClient.kt`](prototype-2/app/app/src/main/java/com/ElbehiAhmed/studytimer/utils/RelayMqttClient.kt) and replace the placeholder values in `HOST`, `USERNAME`, and `PASSWORD` with your broker settings. Keep port `8883` for the TLS connection unless your broker configuration says otherwise.
 
-The Android app requires Internet permission, which is already declared in its manifest. The app publishes commands and subscribes to sensor/status topics from [`MainActivity.kt`](prototype%202/app/app/src/main/java/com/ElbehiAhmed/studytimer/activities/MainActivity.kt).
-
-> For real deployments, do not keep credentials in source code. Use a local ignored configuration file or a secure build-time mechanism. Rotate any credentials that have already been committed or shared.
+The Android app requires Internet permission, which is already declared in its manifest. The app publishes commands and subscribes to sensor/status topics from [`MainActivity.kt`](prototype-2/app/app/src/main/java/com/ElbehiAhmed/studytimer/activities/MainActivity.kt).
 
 ### ESP32 settings
 
-Open [`prototype 2/esp32/esp32_code.ino`](prototype%202/esp32/esp32_code.ino) and replace:
+Open [`prototype-2/esp32/esp32_code.ino`](prototype-2/esp32/esp32_code.ino) and replace:
 
 ```cpp
 const char* WIFI_SSID = "your-wifi-name";
@@ -86,17 +79,15 @@ The pin assignments and the hardware documentation must agree. Change the sketch
 ## 5. Build and run the Android app
 
 1. Start Android Studio.
-2. Choose **Open** and select `prototype 2/app`, which contains `settings.gradle.kts` and the Gradle wrapper.
+2. Choose **Open** and select `prototype-2/app`, which contains `settings.gradle.kts` and the Gradle wrapper.
 3. Allow Gradle sync to finish and install any requested Android SDK components.
-4. Connect an Android 8.0+ device with USB debugging enabled, or create an emulator with API 26 or newer.
-5. Select the `app` run configuration and press **Run**.
-6. Grant network access if Android requests it.
-7. Keep the app open while testing. Moving the brightness slider publishes to `home/brightness`; the app receives temperature, humidity, and state updates from MQTT.
+4. Select the `app` run configuration and press **Run**.
+
 
 From a terminal, the same debug build can be started from the project directory:
 
 ```powershell
-cd 'prototype 2\app'
+cd 'prototype-2\app'
 .\gradlew.bat assembleDebug
 ```
 
@@ -155,30 +146,9 @@ Prototype 1 does not provide the full Prototype 2 sensor, dimming, LCD, and cont
 - Confirm the network is available to the ESP32 and is suitable for the board's Wi-Fi band.
 - Watch Serial Monitor at `115200` baud.
 
-### MQTT authentication or TLS fails
-
-- Confirm the HiveMQ hostname does not include `https://`.
-- Confirm the port is `8883` and the username/password are current.
-- Confirm both clients use the same broker cluster.
-- Test the credentials in the HiveMQ Web Client.
-
 ### The app connects but shows no sensor data
 
 - Subscribe to `home/#` with an MQTT client.
 - Confirm that the ESP32 sketch publishes the exact topics expected by `MainActivity.kt`.
 - Check DHT11 wiring and power.
 - Confirm the ESP32 loop continues calling the MQTT client loop function.
-
-### The brightness value is wrong or the lamp does not respond
-
-- Test the MQTT payload before testing the TRIAC circuit.
-- Check zero-crossing and optocoupler wiring.
-- Review the delay-table and phase-angle notes in `prototype 2/Firmware/`.
-- Do not bypass isolation or safety protection.
-
-## 10. Important local files
-
-- `local.properties`: Android SDK path; keep it local and do not commit it.
-- `build/` and `app/build/`: generated Gradle output; do not edit these files.
-- `gradle/wrapper/`: Gradle wrapper metadata used by the Android builds.
-- `.gitignore`: excludes local configuration and generated output.
