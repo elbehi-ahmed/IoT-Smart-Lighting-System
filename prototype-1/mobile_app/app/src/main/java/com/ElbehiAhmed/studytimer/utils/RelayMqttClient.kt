@@ -7,13 +7,13 @@ import com.hivemq.client.mqtt.mqtt3.Mqtt3BlockingClient
 import android.util.Log
 
 object RelayMqttClient {
-
-    private const val TAG = "RelayMqttClient"
-    private const val HOST = "81135964782e485cb30707f9520dc6f6.s1.eu.hivemq.cloud"
+    // put here your credentials
+    private const val TAG = ""
+    private const val HOST = ""
     private const val PORT = 8883 // Use 8883 for TLS
-    private const val USERNAME = "esp32_project"
-    private const val PASSWORD = "YourStrongPassword123"
-    private const val CLIENT_ID = "android_relay_app"
+    private const val USERNAME = ""
+    private const val PASSWORD = ""
+    private const val CLIENT_ID = ""
     private const val TOPIC = "home/relay/"
 
     private val client: Mqtt3BlockingClient by lazy {
