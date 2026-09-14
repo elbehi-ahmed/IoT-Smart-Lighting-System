@@ -6,8 +6,8 @@ An end-to-end smart-lighting project that connects an Android application to an 
 
 | Prototype | Preview / Watch |
 | --- | --- |
-| **Prototype 1** (Basic Relay) | [![Proto 1 Demo](https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=200)](assets/demos/proto-1-demo.mp4) |
-| **Prototype 2** (Full System) | [![Proto 2 Demo](https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?w=600)](assets/demos/proto-2-demo.mp4) |
+| **Prototype 1** (Basic Relay) | [![Proto 1 Demo]()](assets/demos/proto-1-demo.mp4) |
+| **Prototype 2** (Full System) | [![Proto 2 Demo]()](assets/demos/proto-2-demo.mp4) |
 
 
 ## Choose a prototype
