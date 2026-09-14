@@ -2,6 +2,14 @@
 
 An end-to-end smart-lighting project that connects an Android application to an ESP32 over MQTT. The system supports relay control, brightness control, environmental monitoring, local usage history, and automatic brightness control using an LDR sensor.
 
+## Video Demos
+
+| Prototype | Preview / Watch |
+| --- | --- |
+| **Prototype 1** (Basic Relay) | [![Proto 1 Demo](assets/demos/proto1-thumb.jpg)](assets/demos/proto-1-demo.mp4) |
+| **Prototype 2** (Full System) | [![Proto 2 Demo](assets/demos/proto2-thumb.jpg)](assets/demos/proto-2-demo.mp4) |
+
+
 ## Choose a prototype
 
 | Prototype | Purpose | Android project | ESP32 entry point |

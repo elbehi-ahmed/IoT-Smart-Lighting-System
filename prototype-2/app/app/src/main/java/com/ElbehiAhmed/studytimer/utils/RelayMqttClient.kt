@@ -8,13 +8,13 @@ import com.hivemq.client.mqtt.mqtt3.message.publish.Mqtt3Publish
 import android.util.Log
 
 object RelayMqttClient {
-
-    private const val TAG = "RelayMqttClient"
-    private const val HOST = "81135964782e485cb30707f9520dc6f6.s1.eu.hivemq.cloud"
+    // put your credentials here 
+    private const val TAG = ""
+    private const val HOST = ""
     private const val PORT = 8883 // Use 8883 for TLS
-    private const val USERNAME = "esp32_project"
-    private const val PASSWORD = "YourStrongPassword123"
-    private const val CLIENT_ID = "android_relay_app"
+    private const val USERNAME = ""
+    private const val PASSWORD = ""
+    private const val CLIENT_ID = ""
 
     // Last Will topic/payload: the broker publishes this itself the moment it notices this
     // client is gone (crash, force-close, network drop, swipe from recents, keep-alive
