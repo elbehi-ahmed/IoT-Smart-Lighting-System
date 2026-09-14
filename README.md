@@ -66,11 +66,11 @@ Read [`INSTALLATION.md`](INSTALLATION.md) for the complete procedure. In short:
 
 - [Installation guide](INSTALLATION.md)
 - [HiveMQ broker configuration](broker-conf.md)
-- [Firmware architecture](prototype%202/Firmware/read%20me%20(firmware_architecture).md)
-- [MQTT communication notes](prototype%202/Firmware/mqtt-communication.md)
-- [Automatic control](prototype%202/Firmware/automatic-control..md)
-- [Closed-loop analysis](prototype%202/Control_systems/closed_loop/closed_loop.md)
-- [Hardware architecture](prototype%202/Hardware/TRIAC%20Leading-Edge%20Phase-Angle%20Controller/readme%20(principal_used%26architecture).md)
+- [Firmware architecture](prototype-2/Firmware/read%20me%20(firmware_architecture).md)
+- [MQTT communication notes](prototype-2/Firmware/mqtt-communication.md)
+- [Automatic control](prototype-2/Firmware/automatic-control..md)
+- [Closed-loop analysis](prototype-2/Control_systems/closed_loop/closed_loop.md)
+- [Hardware architecture](prototype-2/Hardware/TRIAC%20Leading-Edge%20Phase-Angle%20Controller/readme%20(principal_used%26architecture).md)
 
 --
 created by Bouhlel Ahmed & Elbehi Ahmed
