@@ -82,7 +82,7 @@ Read [`INSTALLATION.md`](INSTALLATION.md) for the complete procedure. In short:
 
 --
 created by Bouhlel Ahmed & Elbehi Ahmed
-If you encounter any bugs, have questions, or want to suggest improvements:
+If you encounter any bugs, have questions, or want to suggest improvements
 Bug Reports: Open an issue on the GitHub Issues page or contact us .
 
 
